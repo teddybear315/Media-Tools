@@ -62,7 +62,7 @@ cwd = os.getcwd()
 current_episode=0
 
 if not rp_check and not movie: replace_periods = yn_bool(input("Replace Periods? (y/N) "))
-if not show_name and not movie: show = input("Show Title? ")
+if not show_name and not movie: show_name = input("Show Title? ")
 if not year: year = int(input("Release Year? "))
 if not season and not movie: season = int(input("Season Number? "))
 
