@@ -1,6 +1,6 @@
+import math
 import os
 import subprocess
-import math
 from sys import argv
 
 # Get the current working directory
@@ -331,3 +331,6 @@ for item in os.listdir(cwd):
             ep = nth_item + 1
         else:
             ep = ep + 1
+
+if "-cp" in argv:
+    subprocess.call("reencode-compare")
