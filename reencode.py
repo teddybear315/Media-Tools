@@ -21,8 +21,12 @@ def default(argi):
     """
     Returns if the command line argument (sys.argv[argi]) specified should be set to default
     Returns if the command line argument (sys.argv[argi]) has another option or no successor
-    :param argi: index of parameter
-    :return: bool
+
+    Args:
+        argi (int): position of argument in argv
+
+    Returns:
+        bool: if using default value
     """
     return len(argv) < (argi + 2) or (argv[argi + 1][0] == '-' and not represents_int(argv[argi + 1]))
 
@@ -190,10 +194,10 @@ if index_checks != 3 and rename_decision and not movie:
         example_item = len(_[:-4])
         break
     for letter in range(0, example_item):
-        strs[0] = strs[0] + str(math.floor(letter / 10))
+        strs[0] = strs[0] + str(math.floor(letter / 10) % 10)
         strs[1] = strs[1] + str(letter % 10)
         strs[2] = strs[2] + '-'
-        strs[3] = strs[3] + str(math.floor((example_item / 10) - (letter / 10)))
+        strs[3] = strs[3] + str(math.floor((example_item / 10) - (letter / 10)) % 10)
         strs[4] = strs[4] + str((example_item - letter) % 10)
     for _str in strs:
         print(_str)
@@ -212,8 +216,16 @@ if index_checks != 3 and rename_decision and not movie:
         ruler_2nd = yn_bool(input("Does the EXAMPLE RULER contain multiple episodes in one file? (y/n)"))
 
 
-# checks if each spot is int instead of trying to convert entire string, fails if you supply a char
 def ep_pos_to_int(_str, pos):
+    """Checks if each spot is int instead of trying to convert entire string, fails if supply a char
+
+    Args:
+        _str (str): episode title
+        pos (int): position of 'E' supplied by user
+
+    Returns:
+        int: Episode number
+    """
     return int(_str[pos]) * 10 + int(_str[pos + 1])
 
 

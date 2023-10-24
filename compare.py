@@ -39,8 +39,8 @@ for filename1 in files1:
             size1 = round(os.path.getsize(file1_path)/1024/1024)
             size2 = round(os.path.getsize(file2_path)/1024/1024)
             size_char1 = size_char2 ='M'
-            total_start_size = total_start_size+size1
-            total_end_size = total_end_size+size2
+            total_start_size += size1
+            total_end_size += size2
 
             size_difference = size1 - size2
             percentage_difference = (size_difference / size1) * 100
