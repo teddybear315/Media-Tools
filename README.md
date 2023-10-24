@@ -2,6 +2,9 @@
 
  Media tools for reencoding TV/Movie media
 
+## Why would anyone use this?
+ I frequently find media either only available in x264, not encoded with 10bit, or just having larger file sizes or a higher bitrate than needed. With a large library this tool makes it easy to format entire series or movies.
+
 # Requirements
 
  FFmpeg
@@ -56,7 +59,7 @@
 | `-10b [Y/n]`               | 10 Bit Mode                                                                                                       | &#9744;  |
 | `-cq [int]`                | Constant Bitrate Quality (translates to `-rc vbr -crf [cq]` with cpu or `-rc vbr -cq [cq] -qmax [cq+3]` with gpu) | &#9745;  |
 | `-srt [Y/n]`               | External Subtitles                                                                                                | &#9744;  |
-| `-l <eng>`                 | Subtitle Language Abbreviation for External subtitles                                                             | &#9745;  |
+| `-l <eng>`                 | Subtitle Language Abbreviation for External subtitles or omitting extra subtitle streams                          | &#9745;  |
 | `-ss`                      | Skip Subtitle Encoding                                                                                            | &#9744;  |
 | `-se <encoding>`           | Change subtitle Encoding                                                                                          | &#9745;  |
 | `-a[rt] <path>`            | Specify path to art                                                                                               | &#9745;  |
