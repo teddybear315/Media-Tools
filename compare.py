@@ -59,7 +59,7 @@ percentage_difference = (size_difference / total_start_size) * 100
 size_char1 = size_char2 ='M'
 if total_start_size > 974:
     total_start_size = total_start_size / 1024
-    size_char2 = "G"
+    size_char1 = "G"
 if total_end_size > 974:
     total_end_size = total_end_size / 1024
     size_char2 = "G"

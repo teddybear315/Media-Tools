@@ -345,4 +345,4 @@ for item in os.listdir(cwd):
             ep = ep + 1
 
 if "-cp" in argv:
-    subprocess.call("reencode-compare")
+    subprocess.call(f"python {os.path.dirname(os.path.abspath(__file__))}/compare.py")
