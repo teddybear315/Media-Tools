@@ -25,9 +25,9 @@
 
 ## reencode.py arguments
 
-### IF USING -P AND GETTING 0 BYTE FILES REMOVE -P AND CHECK FFMPEG OUTPUT AND SET SETTINGS ACCORDINGLY
-
-### raw data passed directly to ffmpeg
+IF USING -P AND GETTING 0 BYTE FILES REMOVE -P AND CHECK FFMPEG OUTPUT AND SET SETTINGS ACCORDINGLY
+raw data passed directly to ffmpeg
+capital letter in \[y/n\] default
 
 ### MetaData
 
