@@ -294,7 +294,7 @@ for item in os.listdir(cwd):
         else:   str_bitmode = f"yuv420p{'10le' if b10_mode else ''}"
 
         cmd = f"{cmd} -map 0:v{str_subtitlemapping} -c:v:0 {'hevc_nvenc' if gpu else 'libx265'}" \
-              f" -profile:v {str_profile} -level {fflvl} -preset {'p7' if gpu else 'veryfast'} -pix_fmt {str_bitmode}"
+              f" -profile:v {str_profile} -level {fflvl} -preset {'p6' if gpu else 'fast'} -pix_fmt {str_bitmode}"
         if bitrate[0].lower() != "auto":
             cmd = f"{cmd} -b:v {bitrate[0]}{str_maxbitrate}"
             if not gpu:
@@ -306,7 +306,7 @@ for item in os.listdir(cwd):
             cmd = f"{cmd} -rc vbr -crf {q}"
         elif cq and gpu: # -gpu -cq
             cmd = f"{cmd} -rc vbr -qp {cq} -qmax {cq + 3}"
-        elif cq: # -c -cq
+        elif cq and not gpu: # -c -cq
             cmd = f"{cmd} -rc vbr -crf {cq}"
         elif bitrate[1].lower() == "AUTO" and cq+q == 0: # -b [int]
             cmd = f"{cmd} -rc cbr{' -qp -1' if gpu else ''}"
@@ -315,7 +315,7 @@ for item in os.listdir(cwd):
         else:
             cmd = f"{cmd} -rc vbr -crf 20"
 
-    cmd = f"{cmd}{str_tune if tune_film or tune_animation else ''} -aq-mode 2 -bf 0 -map 0:a -c:a copy"
+    cmd = f"{cmd}{str_tune if tune_film or tune_animation else ''} -aq-mode 2 -map 0:a -c:a copy"
 
     if not skip_subtitles:
         if not lang:
