@@ -1,7 +1,10 @@
 # Media Tools
 
  Media tools for reencoding TV/Movie media
- For ease of use or if having problems with compare.py running, add this project to your PATH variable and create script files along the lines of `python <install path>/<python script>.py` for compare please name the script "reencode-compare"
+ 
+ For ease of use or if having problems with compare.py running, add this project to your PATH variable and create script files along the lines of `python <install path>/<python script>.py`
+ 
+ for compare please avoid the name "compare"
 
 ## Why would anyone use this?
  I frequently find media either only available in x264, not encoded with 10bit, or just having larger file sizes or a higher bitrate than needed. With a large library this tool makes it easy to format entire series or movies.
@@ -9,6 +12,7 @@
 # Requirements
 
  FFmpeg
+ 
  Python
 
 # Usage
@@ -26,7 +30,9 @@
 ## reencode.py arguments
 
 IF USING -P AND GETTING 0 BYTE FILES REMOVE -P AND CHECK FFMPEG OUTPUT AND SET SETTINGS ACCORDINGLY
+
 raw data passed directly to ffmpeg
+
 capital letter in \[y/n\] default
 
 ### MetaData
