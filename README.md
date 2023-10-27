@@ -51,7 +51,7 @@ capital letter in \[y/n\] default
 | argument    | description                                                                               | raw data |
 | ----------- | ----------------------------------------------------------------------------------------- | -------- |
 | `-c [int]`  | Thread count                                                                              | &#9744;  |
-| `-cp`       | Compare Filesizes after completion (please complete "ease of use" setup for this to work) |
+| `-cp`       | Compare Filesizes after completion (please complete "ease of use" setup for this to work) | &#9744;  |
 | `-gpu`      | use hevc_nvenc over libx265                                                               | &#9744;  |
 | `-p`        | Pretty Output                                                                             | &#9744;  |
 | `-r [Y/n]`  | Rename Files?                                                                             | &#9744;  |
