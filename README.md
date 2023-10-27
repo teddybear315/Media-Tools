@@ -38,7 +38,6 @@ capital letter in \[y/n\] default
 
 ### MetaData
 
-
 | argument    | description  | raw data |
 | ----------- | ------------ | -------- |
 | `-m [str]`  | Movie Name   | &#9745;  |
