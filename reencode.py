@@ -36,10 +36,10 @@ def yn_bool(yn: str): return yn.lower() == 'y'
 
 video_formats = ["mp4", "mkv"]
 rename = show = overwrite_mode = movie = art_path = lang = movie_path = str_subtitlemapping = ""
-q = -1
+q = cq = -1
 fflvl = "4.1"
 subenc = "copy"
-year = season = cq = subtitle_input = ep_i = start_i = end_i = index_checks = ep = 0
+year = season = subtitle_input = ep_i = start_i = end_i = index_checks = ep = 0
 ruler_2nd = pretty = external_subtitles = replace_periods = skip_subtitles = skip_reencode = has_art = b10_mode = tune_animation = gpu = broken_artwork = lossless = False
 ep_check = te_check = bit_check = rp_check = ss_check = sr_check = es_check = rn_check = b10_check = ov_check = False
 bitrate = ("0", "0")
@@ -296,7 +296,7 @@ for item in os.listdir(cwd):
         cmd = f"{cmd} -map 0:v{str_subtitlemapping} -gpu 0 -c:v:0 copy"
     else:
         str_profile = f"main{'10' if b10_mode else ''}"
-        str_maxbitrate = (" -maxrate " + bitrate[1]) if bitrate[1] != 'AUTO' else ''
+        str_maxbitrate = (" -maxrate " + bitrate[1]) if bitrate[1] != 'AUTO' else f' -maxrate {bitrate[0]}'
         if gpu: str_bitmode = "p010le" if b10_mode else "yuv420p"
         else:   str_bitmode = f"yuv420p{'10le' if b10_mode else ''}"
 
@@ -312,11 +312,11 @@ for item in os.listdir(cwd):
                 cmd = f"{cmd} -rc vbr -qp {q} -qmin {q - 3} -qmax {q + 3}"
             elif q > 0 and not gpu:
                 cmd = f"{cmd} -rc vbr -crf {q}"
-            elif cq and gpu: # -gpu -cq
+            elif cq > 0 and gpu: # -gpu -cq
                 cmd = f"{cmd} -rc vbr -qp {cq} -qmax {cq + 3}"
-            elif cq and not gpu: # -c -cq
+            elif cq > 0 and not gpu: # -c -cq
                 cmd = f"{cmd} -rc vbr -crf {cq}"
-            elif bitrate[1].lower() == "AUTO" and cq+q == 0: # -b [int]
+            elif bitrate[1].lower() == "auto" and cq+q <= 0: # -b [int]
                 cmd = f"{cmd} -rc cbr{' -qp -1' if gpu else ''}"
             elif gpu: # -gpu
                 cmd = f"{cmd} -rc vbr -qp 18 -qmax 20"
@@ -329,10 +329,10 @@ for item in os.listdir(cwd):
     if not skip_subtitles:
         if not lang:
             cmd = f"{cmd}{' -map 0:s' if not str_subtitlemapping else ''} -c:s {subenc}"
+        elif not external_subtitles:
+            cmd = f"{cmd} -map 0:s:m:language:{lang}"
         else:
-            cmd = f"{cmd} -map 0:s:m:language:{lang} -c:s {subenc}"
-        if external_subtitles:
-            cmd = f"{cmd} -metadata:s:s:0 language={lang if lang else 'eng'}"
+            cmd = f"{cmd} -metadata:s:s:0 language={lang if lang else 'eng'} -c:s {subenc}"
 
     if ep_title: cmd = f"{cmd} -metadata title=\"{ep_title}\""
     elif movie:  cmd = f"{cmd} -metadata title=\"{movie}\""
