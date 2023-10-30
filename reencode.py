@@ -173,7 +173,7 @@ for arg in range(0, len(argv)):
 if not bit_check and not skip_reencode and not (cq or q):
     bitrate = (input("Target Bitrate? "), input("Max Bitrate? (0 for CBR) "))
     if bitrate[1] == '0': bitrate = ('0', "AUTO")
-if not ((q or cq) or skip_reencode or bitrate[0] == "AUTO" or bitrate[1] == "AUTO"):
+if not ((q or cq) or skip_reencode or bitrate[0].lower() == "auto" or bitrate[1].lower() == "auto"):
     cq = int(input("Target Quality? -crf (1-51) "))
 
 if not b10_check and not skip_reencode: b10_mode = yn_bool(input("10b Encoding? (y/N) "))
@@ -296,7 +296,7 @@ for item in os.listdir(cwd):
         cmd = f"{cmd} -map 0:v{str_subtitlemapping} -gpu 0 -c:v:0 copy"
     else:
         str_profile = f"main{'10' if b10_mode else ''}"
-        str_maxbitrate = (" -maxrate " + bitrate[1]) if bitrate[1] != 'AUTO' else f' -maxrate {bitrate[0]}'
+        str_maxbitrate = (" -maxrate " + bitrate[1]) if bitrate[1].lower() != 'auto' else f' -maxrate {bitrate[0]}'
         if gpu: str_bitmode = "p010le" if b10_mode else "yuv420p"
         else:   str_bitmode = f"yuv420p{'10le' if b10_mode else ''}"
 
@@ -305,9 +305,8 @@ for item in os.listdir(cwd):
         if not lossless:
             if bitrate[0].lower() != "auto":
                 cmd = f"{cmd} -b:v {bitrate[0]}{str_maxbitrate}"
-                if not gpu:
-                    if bitrate[1][-1].lower() == 'k': cmd = f"{cmd} -bufsize {int(bitrate[1][:-1])+1000}K"
-                    elif bitrate[1][-1].lower() == 'm': cmd = f"{cmd} -bufsize {int(bitrate[1][:-1])+1}M"
+                if bitrate[1][-1].lower() == 'k': cmd = f"{cmd} -bufsize {int(bitrate[1][:-1])+1000}K"
+                elif bitrate[1][-1].lower() == 'm': cmd = f"{cmd} -bufsize {int(bitrate[1][:-1])+1}M"
             if q > 0 and gpu: # -gpu -q
                 cmd = f"{cmd} -rc vbr -qp {q} -qmin {q - 3} -qmax {q + 3}"
             elif q > 0 and not gpu:
@@ -318,13 +317,17 @@ for item in os.listdir(cwd):
                 cmd = f"{cmd} -rc vbr -crf {cq}"
             elif bitrate[1].lower() == "auto" and cq+q <= 0: # -b [int]
                 cmd = f"{cmd} -rc cbr{' -qp -1' if gpu else ''}"
-            elif gpu: # -gpu
-                cmd = f"{cmd} -rc vbr -qp 18 -qmax 20"
-            else:
-                cmd = f"{cmd} -rc vbr -crf 20"
+            # elif gpu: # -gpu
+            #     cmd = f"{cmd} -rc vbr -qp 18 -qmax 20"
+            # else:
+            #     cmd = f"{cmd} -rc vbr -crf 20"
             cmd = f"{cmd}{str_tune if tune_animation else ''} -aq-mode 2"
         else: cmd = f"{cmd} -x265-params lossless=1"
-    cmd = f"{cmd} -map 0:a -c:a copy"
+        
+        if lang:
+            cmd = f"{cmd} -map 0:a:m:language:{lang} -c:a copy"
+        else:
+            cmd = f"{cmd} -map 0:a -c:a copy"
 
     if not skip_subtitles:
         if not lang:
