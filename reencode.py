@@ -231,7 +231,10 @@ def ep_pos_to_int(_str, pos):
     Returns:
         int: Episode number
     """
-    return int(_str[pos]) * 10 + int(_str[pos + 1])
+    try:
+        return int(_str[pos]) * 10 + int(_str[pos + 1])
+    except:
+        return int(_str[pos])
 
 
 # Loop through each item in the directory
