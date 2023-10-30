@@ -18,15 +18,29 @@
 
 ## Usage
 
-## Recommended Bitrate and Quality for x265 encoding
+### Recommended Bitrate and Quality for x265 encoding
 
-| res             | bitrate  | qval  |
-| --------------- | -------- | ----- |
-| 720p            | 1080p    | 18-20 |
-| 1080p animation | 1-3mbps  | 20-25 |
-| 1080p           | 2-4mbps  | 20-25 |
-| 1440p           | 4-6mbps  | 20-25 |
-| 4K              | 6-10mbps | 13-18 |
+| res             | bitrate   | qval  |
+| --------------- | --------- | ----- |
+| 720p            | 1-2mbps   | 16-20 |
+| 1080p animation | 1-3mbps   | 20-25 |
+| 1080p           | 2-4mbps   | 18-25 |
+| 1440p           | 4-6mbps   | 16-23 |
+| 4K              | 6-10mbps  | 13-18 |
+
+### Recommended Encoding Levels for x265 encoding
+
+| res             | fps | level |
+| --------------- | --- | ----- |
+| 720×480         | 40  | 3     |
+| 1280×720        | 30  | 3.1   |
+| 960×540         | 60  | 3.1   | 
+| 720×480         | 80  | 3.1   |
+| 1280×720        | 60  | 4     |
+| 1920×1080       | 30  | 4     |
+| 1920×1080       | 60  | 4.1   |
+| 3840×2160       | 30  | 5     |
+| 3840×2160       | 60  | 5.1   |
 
 ## reencode.py arguments
 
