@@ -62,7 +62,7 @@ capital letter in \[y/n\] default
 | argument                   | description                                                                                                       | raw data |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------- |
 | `-sv`                      | Skip Video Encoding                                                                                               | &#9744;  |
-| -ll                        | Lossless conversion, used mainly for heavily compressed x264 conversion                                           | &#9744;  |
+| `-ll`                      | Lossless conversion, used mainly for heavily compressed x264 conversion                                           | &#9744;  |
 | `-ta`                      | Tune Animation                                                                                                    | &#9744;  |
 | `-lv [encoding lvl]`       | Encoding level, `4.0`:720p60/1080p30, `4.1`:1080p60, `5.0`:4k30, `5.1`:4k60                                       | &#9745;  |
 | `-b [int][k/m] [int][k/m]` | Bitrate Min/Max, leave blank for automatic bitrate                                                                | &#9745;  |
