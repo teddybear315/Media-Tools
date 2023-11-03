@@ -303,7 +303,7 @@ for item in os.listdir(cwd):
         if gpu: str_bitmode = "p010le" if b10_mode else "yuv420p"
         else:   str_bitmode = f"yuv420p{'10le' if b10_mode else ''}"
 
-        cmd = f"{cmd} -map 0:v{':0'if broken_artwork else ''}{str_subtitlemapping} -c:v:0 {'hevc_nvenc' if gpu else 'libx265'}" \
+        cmd = f"{cmd} -map 0:v{':0' if broken_artwork else ''}{str_subtitlemapping} -c:v{':0' if broken_artwork else ''} {'hevc_nvenc' if gpu else 'libx265'}" \
               f" -profile:v {str_profile} -level {fflvl} -preset {'p6' if gpu else 'faster'} -pix_fmt {str_bitmode}"
         if not lossless:
             if bitrate[0].lower() != "auto":
@@ -336,7 +336,7 @@ for item in os.listdir(cwd):
         if not lang:
             cmd = f"{cmd}{' -map 0:s' if not str_subtitlemapping else ''} -c:s {subenc}"
         elif not external_subtitles:
-            cmd = f"{cmd} -map 0:s:m:language:{lang}"
+            cmd = f"{cmd} -map 0:s:m:language:{lang} -c:s {subenc}"
         else:
             cmd = f"{cmd} -metadata:s:s:0 language={lang if lang else 'eng'} -c:s {subenc}"
 
