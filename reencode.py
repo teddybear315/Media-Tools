@@ -304,7 +304,7 @@ for item in os.listdir(cwd):
         else:   str_bitmode = f"yuv420p{'10le' if b10_mode else ''}"
 
         cmd = f"{cmd} -map 0:v{':0'if broken_artwork else ''}{str_subtitlemapping} -c:v:0 {'hevc_nvenc' if gpu else 'libx265'}" \
-              f" -profile:v {str_profile} -level {fflvl} -preset {'p6' if gpu else 'fast'} -pix_fmt {str_bitmode}"
+              f" -profile:v {str_profile} -level {fflvl} -preset {'p6' if gpu else 'faster'} -pix_fmt {str_bitmode}"
         if not lossless:
             if bitrate[0].lower() != "auto":
                 cmd = f"{cmd} -b:v {bitrate[0]}{str_maxbitrate}"
