@@ -41,7 +41,7 @@ fflvl = "4.1"
 subenc = "copy"
 year = season = subtitle_input = ep_i = start_i = end_i = index_checks = ep = 0
 ruler_2nd = pretty = external_subtitles = replace_periods = skip_subtitles = skip_reencode = has_art = b10_mode = tune_animation = gpu = broken_artwork = lossless = False
-ep_check = te_check = bit_check = rp_check = ss_check = sr_check = es_check = rn_check = b10_check = ov_check = False
+ep_check = te_check = bit_check = rp_check = ss_check = sr_check = es_check = rn_check = b10_check = ov_check = no_audio_lang = False
 bitrate = ("0", "0")
 
 help_bitrate = """Recommended Bitrate and Quality for x265 encoding
@@ -77,6 +77,7 @@ Video:
 -10b [Y/n]          : 10 Bit Mode
 -cq  [int]          : Constant Bitrate Quality (translates to "-rc vbr -crf [cq]" with cpu or "-rc vbr -cq [cq] -qmax [cq+3]" with gpu), passed directly to ffmpeg
 --broken_artwork    : Only use if artwork stream is broken, or you want to discard all video streams other than 0
+--no_audio_lang     : Used if srt file has language and audio doesnt, if not using external srt file dont include -l, side effect: sets audio language metadata to -l
 
 -srt [Y/n]          : External Subtitles
 -l  <eng>           : Subtitle Language Abbreviation for External subtitles, passed directly to ffmpeg
@@ -101,6 +102,7 @@ for arg in range(0, len(argv)):
         print(help_message)
         exit(0)
     elif argv[arg] == "--broken_artwork": broken_artwork = True
+    elif argv[arg] == "--no_audio_lang": no_audio_lang = True
     elif argv[arg] == "-ta": tune_animation = True
     elif argv[arg] == "-gpu": gpu  = True
     elif argv[arg] == "-p": pretty = True
@@ -327,8 +329,10 @@ for item in os.listdir(cwd):
             cmd = f"{cmd}{str_tune if tune_animation else ''} -aq-mode 2"
         else: cmd = f"{cmd} -x265-params lossless=1"
         
-        if lang:
+        if lang and not no_audio_lang:
             cmd = f"{cmd} -map 0:a:m:language:{lang} -c:a copy"
+        elif no_audio_lang:
+            cmd = f"{cmd} -map 0:a -metadata:s:a language={lang} -c:a copy"
         else:
             cmd = f"{cmd} -map 0:a -c:a copy"
 
