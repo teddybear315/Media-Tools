@@ -41,7 +41,8 @@ rename = show = overwrite_mode = movie = art_path = lang = movie_path = str_subt
 q = cq = -1
 fflvl = "4.1"
 subenc = "copy"
-percent_history = size_history = []
+percent_history = []
+size_history = []
 year = season = subtitle_input = ep_i = start_i = end_i = index_checks = ep = 0
 ruler_2nd = pretty = external_subtitles = replace_periods = skip_subtitles = skip_reencode = has_art = b10_mode = tune_animation = gpu = broken_artwork = lossless = False
 ep_check = te_check = bit_check = rp_check = ss_check = sr_check = es_check = rn_check = b10_check = ov_check = no_audio_lang = False
@@ -324,7 +325,7 @@ for item in os.listdir(cwd):
         elif cq > 0 and not gpu: # -c -cq
             cmd = f"{cmd} -rc vbr -crf {cq}"
         elif bitrate[1].lower() == "auto" and cq+q <= 0: # -b [int]
-            cmd = f"{cmd} -rc cbr{' -qp -1' if gpu else ''}"
+            cmd = f"{cmd} -rc cbr"
         # elif gpu: # -gpu
         #     cmd = f"{cmd} -rc vbr -qp 18 -qmax 20"
         # else:
@@ -400,16 +401,16 @@ if len(percent_history) > 1 and "-cp" in argv:
     total_start_size = total_end_size = 0
     size_char1 = size_char2 ='M'
     for i in range(0,len(percent_history)):
-        total_p += percent_history[i]
+        total_p += int(percent_history[i])
         total_start_size += size_history[i][0]
         total_end_size += size_history[i][1]
         if size_history[i][0] > 974: # 95% of GiB
-            size_history[i][0] = size_history[i][0] / 1024
+            size_1 = size_history[i][0] / 1024
             size_char1 = "G"
         if size_history[i][1] > 974:
-            size_history[i][1] = size_history[i][1] / 1024
+            size_2 = size_history[i][1] / 1024
             size_char2 = "G"
-        print(colored("Total File Size", "green")+f" Original: {size_history[i][0]:.2f} {size_char1}iB, Reencoded: {size_history[i][1]:.2f} {size_char2}iB, {colored('reduction', 'green')}: {percent_history[i]:.2f}%")
+        print(colored("Total File Size", "green")+f" Original: {size_1:.2f} {size_char1}iB, Reencoded: {size_2:.2f} {size_char2}iB, {colored('reduction', 'green')}: {percent_history[i]:.2f}%")
     avg_p = total_p / len(percent_history)
     size_char1 = size_char2 ='M'
     if total_start_size > 974: # 95% of GiB
