@@ -60,7 +60,7 @@ capital letter in \[y/n\] default
 | `-s [int]`  | Season       | &#9745;  |
 | `-y [int]`  | Release Year | &#9745;  |
 
-### FFmpeg settings
+### General Settings
 
 | argument    | description                                                                               | raw data |
 | ----------- | ----------------------------------------------------------------------------------------- | -------- |
@@ -68,6 +68,7 @@ capital letter in \[y/n\] default
 | `-cp`       | Compare Filesizes after completion (please complete "ease of use" setup for this to work) | &#9744;  |
 | `-gpu`      | use hevc_nvenc over libx265                                                               | &#9744;  |
 | `-p`        | Pretty Output                                                                             | &#9744;  |
+| `-cp`       | Compare file sizes after encode                                                           | &#9744;  |
 | `-r [Y/n]`  | Rename Files?                                                                             | &#9744;  |
 | `-rp [Y/n]` | Replace Periods                                                                           | &#9744;  |
 

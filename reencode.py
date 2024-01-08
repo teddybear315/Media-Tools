@@ -69,6 +69,7 @@ FFMPEG:
 -c   [#]	    : Thread count
 -gpu		    : use hevc_nvenc over libx265
 -p              : Pretty Output
+-cp             : Compare file sizes after encode
 -r   [Y/n]      : Rename Files?
 -rp  [Y/n]      : Replace Periods
 
@@ -288,7 +289,7 @@ for item in os.listdir(cwd):
         output_item = f"{movie} ({year})"
     else:
         output_item = item_title
-    print(colored("Reencoding", "red")+f" {item} to {output_item}.mp4")
+    print(f"{colored('Reencoding', 'red')} {item} {colored('to', 'red')} {output_item}.mp4")
 
     str_loglevel = ' -loglevel quiet -stats' if pretty else ''
     str_overwrite = ' -' + overwrite_mode if ov_check else ''
@@ -310,28 +311,31 @@ for item in os.listdir(cwd):
 
         cmd = f"{cmd} -map 0:v{':0' if broken_artwork else ''} -c:v{':0' if broken_artwork else ''} {'hevc_nvenc' if gpu else 'libx265'}" \
               f" -profile:v {str_profile} -level {fflvl} -preset {'p6' if gpu else 'faster'} -pix_fmt {str_bitmode}"
-        if lossless: cmd = f"{cmd} -x265-params lossless=1"
-        # if not lossless:
-        if bitrate[0].lower() != "auto":
-            cmd = f"{cmd} -b:v {bitrate[0]}{str_maxbitrate}"
-            if bitrate[1][-1].lower() == 'k': cmd = f"{cmd} -bufsize {int(bitrate[1][:-1])+1000}K"
-            elif bitrate[1][-1].lower() == 'm': cmd = f"{cmd} -bufsize {int(bitrate[1][:-1])+1}M"
-        if q > 0 and gpu: # -gpu -q
-            cmd = f"{cmd} -rc vbr -qp {q} -qmin {q - 3} -qmax {q + 3}"
-        elif q > 0 and not gpu:
-            cmd = f"{cmd} -rc vbr -crf {q}"
-        elif cq > 0 and gpu: # -gpu -cq
-            cmd = f"{cmd} -rc vbr -qp {cq} -qmax {cq + 3}"
-        elif cq > 0 and not gpu: # -c -cq
-            cmd = f"{cmd} -rc vbr -crf {cq}"
-        elif bitrate[1].lower() == "auto" and cq+q <= 0: # -b [int]
-            cmd = f"{cmd} -rc cbr"
+        # if lossless: cmd = f"{cmd} -x265-params lossless=1"
+        if not lossless:
+            if bitrate[0].lower() != "auto":
+                if bitrate[1].lower() != "auto": cmd = f"{cmd} -b:v {bitrate[0]}{str_maxbitrate}"
+                if bitrate[1][-1].lower() == 'k': cmd = f"{cmd} -bufsize {int(bitrate[1][:-1])+1000}K"
+                elif bitrate[1][-1].lower() == 'm': cmd = f"{cmd} -bufsize {int(bitrate[1][:-1])+1}M"
+            if q > 0 and gpu: # -gpu -q
+                cmd = f"{cmd} -rc vbr -qp {q} -qmin {q - 3} -qmax {q + 3}"
+            elif q > 0 and not gpu:
+                cmd = f"{cmd} -rc vbr -crf {q}"
+            elif cq > 0 and gpu: # -gpu -cq
+                cmd = f"{cmd} -rc vbr -qp {cq} -qmax {cq + 3}"
+            elif cq > 0 and not gpu: # -c -cq
+                cmd = f"{cmd} -rc vbr -crf {cq}"
+            elif bitrate[1].lower() == "auto" and cq+q <= 0: # -b [int]
+                cmd = f"{cmd} -rc cbr -b:v {bitrate[0]}{str_maxbitrate}"
+                if bitrate[0][-1].lower() == 'k': cmd = f"{cmd} -bufsize {int(bitrate[0][:-1])}K"
+                elif bitrate[0][-1].lower() == 'm': cmd = f"{cmd} -bufsize {int(bitrate[0][:-1])}M"
         # elif gpu: # -gpu
         #     cmd = f"{cmd} -rc vbr -qp 18 -qmax 20"
         # else:
         #     cmd = f"{cmd} -rc vbr -crf 20"
-        cmd = f"{cmd}{str_tune if tune_animation else ''} -aq-mode 2"
+        else: cmd = f"{cmd} -qp -1"
         # else: cmd = f"{cmd} -x265-params lossless=1"
+        cmd = f"{cmd}{str_tune if tune_animation else ''} -aq-mode 2"
     if lang and not no_audio_lang:
         cmd = f"{cmd} -map 0:a:m:language:{lang} -c:a copy"
     elif no_audio_lang:
@@ -396,27 +400,33 @@ for item in os.listdir(cwd):
         print(colored("File Size", "green")+f" Original: {size1:.2f} {size_char1}iB, Reencoded: {size2:.2f} {size_char2}iB, {colored('reduction', 'green')}: {percentage_difference:.2f}%")
 
 if len(percent_history) > 1 and "-cp" in argv:
-    cprint("Overall Reduction History", "green")
-    total_p = 0
-    total_start_size = total_end_size = 0
-    size_char1 = size_char2 ='M'
-    for i in range(0,len(percent_history)):
-        total_p += int(percent_history[i])
-        total_start_size += size_history[i][0]
-        total_end_size += size_history[i][1]
-        if size_history[i][0] > 974: # 95% of GiB
-            size_1 = size_history[i][0] / 1024
+    with open("Reencode/reduction.txt", "a") as file:
+        cprint("Overall Reduction History", "green")
+        file.write("Overall Reduction History\n")
+        total_p = size_1 = size_2 = 0
+        total_start_size = total_end_size = 0
+        size_char1 = size_char2 ='M'
+        for i in range(0,len(percent_history)):
+            total_p += int(percent_history[i])
+            total_start_size += size_history[i][0]
+            total_end_size += size_history[i][1]
+            if size_history[i][0] > 974: # 95% of GiB
+                size_1 = size_history[i][0] / 1024
+                size_char1 = "G"
+            else: size_1 = size_history[i][0]
+            if size_history[i][1] > 974:
+                size_2 = size_history[i][1] / 1024
+                size_char2 = "G"
+            else: size_2 = size_history[i][1]
+            print(colored("File Size", "green")+f" Original: {size_1:.2f} {size_char1}iB, Reencoded: {size_2:.2f} {size_char2}iB, {colored('reduction', 'green')}: {percent_history[i]:.2f}%")
+            file.write(f"File Size Original: {size_1:.2f} {size_char1}iB, Reencoded: {size_2:.2f} {size_char2}iB, reduction: {percent_history[i]:.2f}%\n")
+        avg_p = total_p / len(percent_history)
+        size_char1 = size_char2 ='M'
+        if total_start_size > 974: # 95% of GiB
+            total_start_size = total_start_size / 1024
             size_char1 = "G"
-        if size_history[i][1] > 974:
-            size_2 = size_history[i][1] / 1024
+        if total_end_size > 974:
+            total_end_size = total_end_size / 1024
             size_char2 = "G"
-        print(colored("Total File Size", "green")+f" Original: {size_1:.2f} {size_char1}iB, Reencoded: {size_2:.2f} {size_char2}iB, {colored('reduction', 'green')}: {percent_history[i]:.2f}%")
-    avg_p = total_p / len(percent_history)
-    size_char1 = size_char2 ='M'
-    if total_start_size > 974: # 95% of GiB
-        total_start_size = total_start_size / 1024
-        size_char1 = "G"
-    if total_end_size > 974:
-        total_end_size = total_end_size / 1024
-        size_char2 = "G"
-    print(colored("Total File Size", "green")+f" Original: {total_start_size:.2f} {size_char1}iB, Reencoded: {total_end_size:.2f} {size_char2}iB, {colored('reduction', 'green')}: {avg_p:.2f}%")
+        print(colored("Total File Size", "green")+f" Original: {total_start_size:.2f} {size_char1}iB, Reencoded: {total_end_size:.2f} {size_char2}iB, {colored('reduction', 'green')}: {avg_p:.2f}%")
+        file.write(f"Total File Size Original: {total_start_size:.2f} {size_char1}iB, Reencoded: {total_end_size:.2f} {size_char2}iB, reduction: {avg_p:.2f}%\n")
